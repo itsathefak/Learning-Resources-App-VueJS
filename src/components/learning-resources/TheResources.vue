@@ -10,8 +10,10 @@
     >Add Resource</base-button
     >
   </base-card>
+  <keep-alive>
+
   <component :is="selectedTab"></component>
-  <!-- ✅ Now correctly binds the selected component -->
+</keep-alive>
 </template>
 
 <script>
@@ -25,7 +27,7 @@ export default {
   },
   data() {
     return {
-      selectedTab: StoredResources, // ✅ Default to StoredResources component
+      selectedTab: StoredResources, 
       storedResources: [
         {
           id: 'official-guide',
@@ -45,6 +47,7 @@ export default {
   provide() {
     return {
       resources: this.storedResources,
+      addResource : this.addResource
     };
   },
   computed:{
@@ -58,8 +61,18 @@ export default {
   methods: {
     setSelectedTab(tab) {
       this.selectedTab =
-        tab === 'stored-resources' ? StoredResources : AddResource; // ✅ Assign the actual component
+        tab === 'stored-resources' ? StoredResources : AddResource; 
     },
+    addResource(title, description, url){
+        const newResource = {
+            id: new Date().toISOString(),
+            title: title,
+            description: description,
+            link: url
+        };
+        this.storedResources.unshift(newResource);
+        this.selectedTab = 'stored-resources'
+    }
   },
 };
 </script>
