@@ -1,17 +1,33 @@
 <template>
+  <base-dialogue v-if="inputIsInvalid" title="Invalid Input" @close="confirmError">
+  <template #default>
+    <p>Unfortunately, at least one input value is Invalid</p>
+    <p>Make sure you enter atleast few characters into each input field</p>
+  </template>
+
+  <template #actions>
+    <base-button @click="confirmError">Okay</base-button>
+  </template>
+
+</base-dialogue>
   <base-card>
     <form @submit.prevent="submitData">
       <div class="form-control">
         <label for="title">Title</label>
-        <input type="text" name="title" id="title" ref="titleInput"/>
+        <input type="text" name="title" id="title" ref="titleInput" />
       </div>
       <div class="form-control">
         <label for="description">Title</label>
-        <textarea name="description" id="description" rows="3" ref="descInput"></textarea>
+        <textarea
+          name="description"
+          id="description"
+          rows="3"
+          ref="descInput"
+        ></textarea>
       </div>
       <div class="form-control">
         <label for="link">Link</label>
-        <input name="link" id="link" type="url" ref="linkInput">
+        <input name="link" id="link" type="url" ref="linkInput" />
       </div>
       <div>
         <base-button type="submit">Add Resources</base-button>
@@ -21,18 +37,35 @@
 </template>
 
 <script>
-export default{
-    inject:['addResource'],
-    methods:{
-        submitData(){
-            const enteredTitle = this.$refs.titleInput.value;
-            const entredDescription = this.$refs.descInput.value;
-            const entredUrl = this.$refs.linkInput.value;
+export default {
+  inject: ['addResource'],
+  data() {
+    return {
+      inputIsInvalid: false,
+    };
+  },
+  methods: {
+    submitData() {
+      const enteredTitle = this.$refs.titleInput.value;
+      const entredDescription = this.$refs.descInput.value;
+      const entredUrl = this.$refs.linkInput.value;
 
-            this.addResource(enteredTitle, entredDescription, entredUrl)
-        }
+      if (
+        enteredTitle.trim() === '' ||
+        entredDescription.trim() === '' ||
+        entredUrl.trim() === ''
+      ) {
+        this.inputIsInvalid = true;
+        return;
+      }
+
+      this.addResource(enteredTitle, entredDescription, entredUrl);
+    },
+    confirmError(){
+      this.inputIsInvalid = false;
     }
-}
+  },
+};
 </script>
 
 <style scoped>
